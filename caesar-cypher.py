@@ -11,22 +11,20 @@ REFERENCE_FREQUENCIES = {
 
 def cypher_encoder(text, shift):
     resultat = ""
-    if shift > 26:
-        shift = shift % 26
+    shift = shift % 26
     for lettre in text:
         if lettre.isalpha():
-            resultat += chr((ord(lettre) + shift))
+            resultat += chr((ord(lettre) - ord('a') + shift) % 26 + ord('a'))
         else:
             resultat += lettre
     return resultat
 
 def cypher_decoder(text, shift):
-    if shift > 26:
-        shift = shift % 26
+    shift = shift % 26
     resultat = ""
     for lettre in text:
         if lettre.isalpha():
-            resultat += chr((ord(lettre) - shift))
+            resultat += chr((ord(lettre) - ord('a') - shift) % 26 + ord('a'))
         else:
             resultat += lettre
     return resultat
@@ -71,7 +69,6 @@ def auto_decrypt(ciphertext):
         texte_decode = cypher_decoder(ciphertext,decalage)
         frequences = calculate_frequencies(texte_decode)
         chi_squared = chi_squared_statistic(frequences, REFERENCE_FREQUENCIES)
-
         if chi_squared < meilleur_chi_squared:
             meilleur_chi_squared = chi_squared
             meilleur_texte = texte_decode
