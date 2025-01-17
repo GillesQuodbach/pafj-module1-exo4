@@ -9,6 +9,7 @@ REFERENCE_FREQUENCIES = {
     'z': 0.21
 }
 
+
 def cypher_encoder(text, shift):
     resultat = ""
     shift = shift % 26
@@ -18,6 +19,7 @@ def cypher_encoder(text, shift):
         else:
             resultat += lettre
     return resultat
+
 
 def cypher_decoder(text, shift):
     shift = shift % 26
@@ -29,12 +31,13 @@ def cypher_decoder(text, shift):
             resultat += lettre
     return resultat
 
+
 def calculate_frequencies(text):
     text = text.lower()
     total_lettres = len(text)
     # Initialisation du tableau de fréquences
     frequences = {}
-    for i in range(97,123):
+    for i in range(97, 123):
         lettre = chr(i)
         frequences[lettre] = 0
 
@@ -51,6 +54,7 @@ def calculate_frequencies(text):
             frequences[lettre] = 0
     return frequences
 
+
 def chi_squared_statistic(observed_frequencies, reference_frequencies):
     resultat = 0
     for lettre in reference_frequencies:
@@ -60,13 +64,14 @@ def chi_squared_statistic(observed_frequencies, reference_frequencies):
             resultat += ((freq_observe - freq_attendu)**2) / freq_attendu
     return resultat
 
+
 def auto_decrypt(ciphertext):
     meilleur_texte = ""
     meilleure_decalage = 0
     meilleur_chi_squared = float("inf")
 
-    for decalage in range(1,26):
-        texte_decode = cypher_decoder(ciphertext,decalage)
+    for decalage in range(0, 26):
+        texte_decode = cypher_decoder(ciphertext, decalage)
         frequences = calculate_frequencies(texte_decode)
         chi_squared = chi_squared_statistic(frequences, REFERENCE_FREQUENCIES)
         if chi_squared < meilleur_chi_squared:
@@ -74,6 +79,7 @@ def auto_decrypt(ciphertext):
             meilleur_texte = texte_decode
             meilleure_decalage = decalage
     return meilleur_texte, meilleure_decalage
+
 
 if len(sys.argv) == 3:  # Mode encodage
     texte = sys.argv[1]
@@ -91,4 +97,3 @@ else:  # Mode interactif
     texte_encode = cypher_encoder(texte, decalage)
     print("Texte encodé :", texte_encode)
     print("Texte décodé :", cypher_decoder(texte_encode, decalage))
-
